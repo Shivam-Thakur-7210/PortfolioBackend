@@ -2,8 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 
-app.use(cors());  // Allow all origins by default, you can customize later
-
+const allowedOrigins = ['https://portfolio-website-delta-umber.vercel.app'];
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 app.use(express.json());
 
 // Your routes and other middleware here
