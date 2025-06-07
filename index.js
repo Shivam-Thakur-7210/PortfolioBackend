@@ -25,7 +25,7 @@ formList.addEventListener("submit", async (e) => {
     // ✅ Wait a moment then reload
     setTimeout(() => {
       location.reload();     // refreshes the whole page
-    }, 100);  // slight delay after alert
+    }, 1500);  // slight delay after alert
 
   } catch (error) {
     alert('Error sending message');
