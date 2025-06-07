@@ -4,7 +4,7 @@ require("dotenv").config();
 
 const app = express();
 
-// ✅ CORS setup
+// ✅ CORS SETUP — add this first
 const allowedOrigins = ['https://portfolio-website-delta-umber.vercel.app'];
 
 app.use(cors({
@@ -12,17 +12,22 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error("Not allowed by CORS"));
     }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true
 }));
 
-// ✅ Handle preflight globally
+// ✅ Allow preflight (OPTIONS) for all routes
 app.options("*", cors());
 
 app.use(express.json());
+
+// ✅ Debug route (optional)
+app.get("/", (req, res) => {
+  res.send("Backend is running.");
+});
 
 // ✅ Connect to DB
 const connectDB = require("./config/database");
@@ -32,8 +37,8 @@ connectDB();
 const userContact = require("./routes/contact");
 app.use("/api/v1", userContact);
 
-// ✅ Server
+// ✅ Server start
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
