@@ -1,34 +1,46 @@
-const formList = document.querySelector(".formInfo");
+const express = require("express");
+const cors = require("cors");
+require("dotenv").config();
 
-formList.addEventListener("submit", async (e) => {
-  e.preventDefault();
+const app = express();
 
-  const formData = {
-    name: formList.name.value,
-    email: formList.email.value,
-    subject: formList.subject.value,
-    message: formList.message.value,
-  };
+// ✅ CORS setup
+const allowedOrigins = ['https://portfolio-website-delta-umber.vercel.app'];
 
-  try {
-    const response = await fetch('https://portfoliobackend-ezq1.onrender.com/api/v1/contact', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    });
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true
+}));
+app.use(express.json());
 
-    const result = await response.json();
-    alert(result.message);   // show success message
+// Your routes and other middleware here
 
-    // ✅ Wait a moment then reload
-    setTimeout(() => {
-      location.reload();     // refreshes the whole page
-    }, 1500);  // slight delay after alert
 
-  } catch (error) {
-    alert('Error sending message');
-    console.error(error);
-  }
-});
+require("dotenv").config();
+
+// ✅ Handle preflight globally
+app.options("*", cors());
+
+const PORT = process.env.PORT || 3000;
+
+const userContact = require("./routes/contact");
+app.use("/api/v1", userContact)
+app.use(express.json());
+
+// ✅ Connect to DB
+const connectDB = require("./config/database");
+connectDB();
+
+app.listen(PORT, ()=>{
+    console.log(`Server is running on port ${PORT}`);
+})
+
